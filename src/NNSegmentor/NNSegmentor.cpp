@@ -433,8 +433,8 @@ void Segmentor::test(const string& testFile, const string& outputFile, const str
 	}
 	else {
 		while (1) {
+			testInsts.clear();
 			m_pipe.readInstances(testFile, testInsts, m_driver._hyperparams.maxlength, m_options.maxInstance, bFile);
-
 			vector<vector<string> > testInstResults(testInsts.size());
 			Metric metric_test;
 			metric_test.reset();
