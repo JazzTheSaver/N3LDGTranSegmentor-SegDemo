@@ -52,13 +52,13 @@ public:
       m_jstWriter->finishWriting();
   }
 
-  int outputAllInstances(const string& m_strOutFile, const vector<vector<string> >& vecInstances) {
+  int outputAllInstances(const string& m_strOutFile, const vector<vector<string> >& vecInstances, bool bFile = true) {
 
     initOutputFile(m_strOutFile.c_str());
     static int instNum;
     instNum = vecInstances.size();
     for (int idx = 0; idx < instNum; idx++) {
-      if (0 != m_jstWriter->write(vecInstances[idx]))
+      if (0 != m_jstWriter->write(vecInstances[idx], bFile))
         return -1;
     }
 
@@ -66,26 +66,26 @@ public:
     return 0;
   }
 
-  int outputSingleInstance(const Instance& inst) {
+	int outputSingleInstance(const Instance& inst, bool bFile = true) {
 
-    if (0 != m_jstWriter->write(&inst))
+    if (0 != m_jstWriter->write(&inst, bFile))
       return -1;
     return 0;
   }
 
-  Instance* nextInstance() {
-    Instance *pInstance = m_jstReader->getNext();
+  Instance* nextInstance(bool bFile = true) {
+    Instance *pInstance = m_jstReader->getNext(bFile);
     if (!pInstance || pInstance->words.empty())
       return 0;
 
     return pInstance;
   }
 
-  void readInstances(const string& m_strInFile, vector<Instance>& vecInstances, int max_sentence_size, int maxInstance = -1) {
+  void readInstances(const string& m_strInFile, vector<Instance>& vecInstances, int max_sentence_size, int maxInstance = -1, bool bFile = true) {
     vecInstances.clear();
     initInputFile(m_strInFile.c_str());
 
-    Instance *pInstance = nextInstance();
+    Instance *pInstance = nextInstance(bFile);
     int numInstance = 0;
 
     while (pInstance) {
@@ -101,14 +101,18 @@ public:
         }
       }
 
-      pInstance = nextInstance();
-
+			if (!bFile)
+				break;
+			else {
+				pInstance = nextInstance(bFile);
+			}
     }
 
     uninitInputFile();
-
-    cout << endl;
-    cout << "instance num: " << numInstance << endl;
+		if (bFile) {
+			cout << endl;
+			cout << "instance num: " << numInstance << endl;
+		}
   }
 
 protected:

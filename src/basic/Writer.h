@@ -14,29 +14,41 @@ class Writer
 public:
 	Writer()
 	{
+		m_outf = &cout;
 	}
 	virtual ~Writer()
 	{
-		if (m_outf.is_open()) m_outf.close();
+		if (m_outf != &cout) {
+			if (((ofstream *)m_outf)->is_open()) {
+				((ofstream *)m_outf)->close();
+				delete m_outf;
+			}
+		}
 	}
 
-	inline int startWriting(const char *filename) {
-		m_outf.open(filename);
-		if (!m_outf) {
-			cout << "Writerr::startWriting() open file err: " << filename << endl;
-			return -1;
+	inline int startWriting(const string& filename) {
+		if (filename != "") {
+			m_outf = new std::ofstream(filename.c_str());
+
+			if (!m_outf) {
+				std::cout << "Writer::startWriting() open file err: " << filename << std::endl;
+				return -1;
+			}
 		}
 		return 0;
 	}
 
 	inline void finishWriting() {
-		m_outf.close();
+		if (m_outf != &std::cout) {
+			((std::ofstream *) m_outf)->close();
+			delete m_outf;
+		}
 	}
 
-	virtual int write(const Instance *pInstance) = 0;
-	virtual int write(const vector<string> &curWords) = 0;
+	virtual int write(const Instance *pInstance, bool bFile) = 0;
+	virtual int write(const vector<string> &curWords, bool bFile) = 0;
 protected:
-	ofstream m_outf;
+	ostream *m_outf;
 };
 
 #endif

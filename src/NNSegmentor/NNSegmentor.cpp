@@ -411,18 +411,39 @@ void Segmentor::predict(const Instance& input, vector<string>& output) {
 void Segmentor::test(const string& testFile, const string& outputFile, const string& modelFile) {
 	loadModelFile(modelFile);
 	vector<Instance> testInsts;
-	m_pipe.readInstances(testFile, testInsts, m_driver._hyperparams.maxlength, m_options.maxInstance);
 
-	vector<vector<string> > testInstResults(testInsts.size());
-	Metric metric_test;
-	metric_test.reset();
-	for (int idx = 0; idx < testInsts.size(); idx++) {
-		predict(testInsts[idx], testInstResults[idx]);
-		testInsts[idx].evaluate(testInstResults[idx], metric_test);
+	bool bFile;
+	if (testFile == "")
+		bFile = false;
+	else
+		bFile = true;
+	if (bFile) {
+		m_pipe.readInstances(testFile, testInsts, m_driver._hyperparams.maxlength, m_options.maxInstance);
+
+		vector<vector<string> > testInstResults(testInsts.size());
+		Metric metric_test;
+		metric_test.reset();
+		for (int idx = 0; idx < testInsts.size(); idx++) {
+			predict(testInsts[idx], testInstResults[idx]);
+			testInsts[idx].evaluate(testInstResults[idx], metric_test);
+		}
+		std::cout << "test:" << std::endl;
+		metric_test.print();
+		m_pipe.outputAllInstances(outputFile, testInstResults);
 	}
-	std::cout << "test:" << std::endl;
-	metric_test.print();
-	m_pipe.outputAllInstances(outputFile, testInstResults);
+	else {
+		while (1) {
+			m_pipe.readInstances(testFile, testInsts, m_driver._hyperparams.maxlength, m_options.maxInstance, bFile);
+
+			vector<vector<string> > testInstResults(testInsts.size());
+			Metric metric_test;
+			metric_test.reset();
+			for (int idx = 0; idx < testInsts.size(); idx++) {
+				predict(testInsts[idx], testInstResults[idx]);
+			}
+			m_pipe.outputAllInstances(outputFile, testInstResults);
+		}
+	}
 }
 
 
