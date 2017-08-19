@@ -436,12 +436,10 @@ void Segmentor::test(const string& testFile, const string& outputFile, const str
 			testInsts.clear();
 			m_pipe.readInstances(testFile, testInsts, m_driver._hyperparams.maxlength, m_options.maxInstance, bFile);
 			vector<vector<string> > testInstResults(testInsts.size());
-			Metric metric_test;
-			metric_test.reset();
 			for (int idx = 0; idx < testInsts.size(); idx++) {
 				predict(testInsts[idx], testInstResults[idx]);
 			}
-			m_pipe.outputAllInstances(outputFile, testInstResults);
+			m_pipe.outputAllInstances(outputFile, testInstResults, bFile);
 		}
 	}
 }
