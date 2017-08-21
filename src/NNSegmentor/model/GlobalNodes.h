@@ -47,7 +47,7 @@ public:
 		}
 
 		char_left_lstm.init(&params.char_left_lstm, hyparams.dropProb, true);
-		char_right_lstm.init(&params.char_right_lstm, hyparams.dropProb, true);
+		char_right_lstm.init(&params.char_right_lstm, hyparams.dropProb, false);
 
 		for (int idx = 0; idx < length; idx++) {
 			char_inputs[idx].init(hyparams.char_dim, hyparams.dropProb);
@@ -102,7 +102,7 @@ public:
 			char_right_conv[idx].forward(cg, &(char_right_represents[idx]));
 		}
 
-		char_left_lstm.forward(cg, getPNodes(char_right_conv, char_size));
+		char_left_lstm.forward(cg, getPNodes(char_left_conv, char_size));
 		char_right_lstm.forward(cg, getPNodes(char_right_conv, char_size));
 	}
 
