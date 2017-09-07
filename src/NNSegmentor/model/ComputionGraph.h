@@ -45,8 +45,8 @@ public:
 	//allocate enough nodes 
 	inline void initial(Graph* pcg, ModelParams& model, HyperParams& opts) {
 		this->pcg = pcg;
-		std::cout << "state size: " << sizeof(CStateItem) << std::endl;
-		std::cout << "action node size: " << sizeof(ActionedNodes) << std::endl;
+		//std::cout << "state size: " << sizeof(CStateItem) << std::endl;
+		//std::cout << "action node size: " << sizeof(ActionedNodes) << std::endl;
 		globalNodes.resize(max_sentence_clength);
 		states.resize(opts.maxlength + 1);
 

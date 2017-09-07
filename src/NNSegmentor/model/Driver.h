@@ -59,7 +59,7 @@ public:
   }
 
 	inline void directInitial(){
-    _hyperparams.print();
+    //_hyperparams.print();
 
 		_builder.resize(1);
 		_builder[0].initial(&_cg, _modelparams, _hyperparams);
