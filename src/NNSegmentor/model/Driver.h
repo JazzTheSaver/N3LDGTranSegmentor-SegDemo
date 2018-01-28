@@ -74,7 +74,7 @@ public:
     _eval.reset();
     dtype cost = 0.0;
     int num = sentences.size();
-		_cg.clearValue();
+		_cg.clearValue(true);
 		for (int idx = 0; idx < num; idx++) {
 			_builder[idx].forward(&sentences[idx], &goldACs[idx]);
 			_eval.overall_label_count += goldACs[idx].size();
